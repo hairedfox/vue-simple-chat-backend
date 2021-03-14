@@ -17,7 +17,10 @@ app.post('/messages', (req, res) => {
   let msg = req.body;
   messages.push(msg.message);
   res.json(msg);
-  console.log(messages);
+})
+
+app.get('/messages/:id', (req, res) => {
+  res.send(messages[Number(req.params.id)]);
 })
 
 app.listen(port, () => console.log(`app running on port ${port}!`))
