@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3000;
 
@@ -30,9 +31,11 @@ app.post('/register', (req, res) => {
   let registerData = req.body;
 
   let newIndex = users.push(registerData);
-  registerData.id = newIndex - 1;
+  let userId = newIndex - 1;
 
-  res.json(registerData)
+  let token = jwt.sign(userId, 'JWT_SECRET'); // just for experiment
+
+  res.json(token)
 })
 
 app.listen(port, () => console.log(`app running on port ${port}!`))
