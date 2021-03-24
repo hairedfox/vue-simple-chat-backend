@@ -44,4 +44,18 @@ app.post('/register', (req, res) => {
   res.json(token)
 })
 
+app.post('/login', (req, res) => {
+  let loginData = req.body;
+
+  let userId = users.findIndex(user => user.userName === loginData.userName);
+
+  if (userId === -1 || users[userId].password !== loginData.password) {
+    return res.status(401).send({message: 'name or password is invalid'})
+  }
+
+  let token = jwt.sign(userId, jwtSecret);
+
+  res.json(token);
+})
+
 app.listen(port, () => console.log(`app running on port ${port}!`))
