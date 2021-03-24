@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3000;
+const jwtSecret = "JWT_SECRET";
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -16,11 +17,16 @@ app.get("/messages", (req, res) => {
 })
 
 app.post('/messages', (req, res) => {
-  const userId = req.header('Authorization')
-  const user = users[userId]
-  let msg = { user: user.userName, text: req.body.message }
-  messages.push(msg);
-  res.json(msg);
+  try {
+    const token = req.header('Authorization')
+    const userId = jwt.decode(token, jwtSecret)
+    const user = users[userId]
+    let msg = { user: user.userName, text: req.body.message }
+    messages.push(msg);
+    res.json(msg);
+  } catch (err) {
+    console.error(error)
+  }
 })
 
 app.get('/messages/:id', (req, res) => {
@@ -33,7 +39,7 @@ app.post('/register', (req, res) => {
   let newIndex = users.push(registerData);
   let userId = newIndex - 1;
 
-  let token = jwt.sign(userId, 'JWT_SECRET'); // just for experiment
+  let token = jwt.sign(userId, jwtSecret); // just for experiment
 
   res.json(token)
 })
